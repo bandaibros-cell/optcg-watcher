@@ -1,0 +1,57 @@
+# ---------------------------------------------------------------------------
+# One Piece TCG Watch Agent — configuration
+# Copy this file to config.yaml and edit. Keep secrets in env vars, not here.
+# ---------------------------------------------------------------------------
+
+# Your Discord webhook. Better: leave blank and set the DISCORD_WEBHOOK env var
+# (required if you run on GitHub Actions, so it stays out of your repo).
+discord_webhook: ""
+
+# --- New official news / set releases --------------------------------------
+releases:
+  enabled: true
+  url: "https://en.onepiece-cardgame.com/news/"
+  link_contains: "/news/"        # only anchors whose href contains this
+  label: "📰 OP TCG News"
+  color: 0x2B6CB0
+
+# --- Tournament results / meta (Limitless One Piece) ------------------------
+meta:
+  enabled: true
+  url: "https://onepiece.limitlesstcg.com/tournaments"
+  link_contains: "/tournament"   # tweak if Limitless changes its URL paths
+  label: "🏆 Tournament"
+  color: 0x6741D9
+
+# --- Product restocks -------------------------------------------------------
+# Add one entry per product page you want watched. Find the exact phrase the
+# page shows when sold out (right-click > View Source, search "sold"/"stock"),
+# OR give an in_stock_text phrase like "Add to cart".
+stock:
+  enabled: false
+  label: "📦 Restock"
+  products:
+    - name: "OP-16 Booster Box (Example Store)"
+      url: "https://www.example-store.com/op16-booster-box"
+      out_of_stock_text: "Sold Out"
+      # in_stock_text: "Add to Cart"   # alternative / more reliable signal
+
+# --- Card prices ------------------------------------------------------------
+# Works with any TCG price API that returns JSON from a search URL. Free tiers
+# exist (e.g. tcgapi.dev ~100 req/day, tcgpricelookup.com ~200 req/day). You
+# MUST confirm two things from your provider's docs:
+#   1. search_url   — the request URL shape
+#   2. price_path   — where the price sits in the JSON (dotted path)
+prices:
+  enabled: false
+  label: "💰 Price"
+  api_base: "https://api.tcgpricelookup.com/v1"
+  api_key_env: "TCG_API_KEY"          # set this env var with your key
+  game_slug: "one-piece"
+  search_url: "https://api.tcgpricelookup.com/v1/search?game={game}&q={query}"
+  price_path: "data.0.market_price"   # adjust to match your provider's JSON
+  watchlist:
+    - query: "Monkey D. Luffy OP01-003"
+      below: 5.00      # alert when market price drops below this
+    - query: "Shanks Leader"
+      above: 60.00     # alert when market price rises above this
