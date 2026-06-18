@@ -32,7 +32,7 @@ jobs:
           TCG_API_KEY: ${{ secrets.TCG_API_KEY }}
         run: |
           [ -f config.yaml ] || cp config.example.yaml config.yaml
-          python watcher.py --test
+          python watcher.py
 
       - name: Persist state
         run: |
